@@ -19,6 +19,22 @@ See `videos/brute-force-demo.mp4` for a live recording showing:
 - Raw Wazuh alerts streaming in real time (`alerts.json`)
 - Discord receiving formatted alerts with MITRE ATT&CK mapping
 
+[![Brute Force Attack Demo](screenshots/shuffle-workflow.png)](videos/brute-force-demo.mp4)
+*Click the image above to watch the demo video.*
+
+The recording shows:
+- Kali running Hydra SSH brute force
+- Raw Wazuh alerts streaming in real time (`alerts.json`)
+- Discord receiving formatted alerts with MITRE ATT&CK mapping
+
+## Screenshots
+
+### SMB Enumeration Detection
+![SMB Enumeration](screenshots/smb-enumeration.png)
+
+### Windows 11 Victim Connected to Wazuh
+![Windows Agent](screenshots/windows11-victim-connected.png)
+
 ## Tools Used
 
 - **Wazuh** — SIEM, log analysis, MITRE ATT&CK mapping
