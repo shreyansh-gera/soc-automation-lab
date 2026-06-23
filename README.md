@@ -15,7 +15,7 @@ and a custom real-time alerting pipeline to Discord.
 
 All three machines run on a VirtualBox host-only network, isolated from the internet.
 
-![Network architecture](screenshots/network-diagram.png)
+![Network Architecture](screenshots/soc-network-diagram.png)
 
 ---
 
