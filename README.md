@@ -3,44 +3,56 @@
 A home lab simulating SOC operations with Wazuh SIEM, Sysmon endpoint monitoring,
 and a custom real-time alerting pipeline to Discord.
 
+[![Watch the demo](screenshots/shuffle-workflow.png)](videos/brute-force-demo.mp4)
+**▲ Click the image above to watch the SSH brute force detection demo**
+
+---
+
 ## Architecture
 
-| VM | Role | Interface | IP |    
+| VM | Role | Interface | IP |
+|----|------|-----------|-----|
 | Ubuntu 24.04 | Wazuh SIEM + Custom Discord Integration | enp0s8 | 192.168.56.101 |
 | Windows 11 | Victim endpoint, Wazuh Agent + Sysmon | Ethernet 2 | 192.168.56.102 |
 | Kali Linux | Attacker | eth1 | 192.168.56.103 |
 
 All three machines run on a VirtualBox host-only network, isolated from the internet.
 
-## Demo
+---
 
-See `videos/brute-force-demo.mp4` for a live recording showing:
-- Kali running Hydra SSH brute force
-- Raw Wazuh alerts streaming in real time (`alerts.json`)
-- Discord receiving formatted alerts with MITRE ATT&CK mapping
+## Demo Video
 
-[![Brute Force Attack Demo](screenshots/shuffle-workflow.png)](videos/brute-force-demo.mp4)
-*Click the image above to watch the demo video.*
+`videos/brute-force-demo.mp4`
 
-The recording shows:
-- Kali running Hydra SSH brute force
-- Raw Wazuh alerts streaming in real time (`alerts.json`)
-- Discord receiving formatted alerts with MITRE ATT&CK mapping
+The recording shows, side by side:
+- Kali running a Hydra SSH brute force attack
+- Raw Wazuh alerts streaming in real time on the manager (`alerts.json`)
+- Discord receiving formatted alerts with MITRE ATT&CK mapping, live, as the attack runs
+
+---
 
 ## Screenshots
 
-### SMB Enumeration Detection
-![SMB Enumeration](screenshots/smb-enumeration.png)
+### Windows 11 victim agent connected to the Wazuh manager
+![Windows 11 victim connected to Wazuh](screenshots/windows-11-victim-VM-connected-wazuh.png)
 
-### Windows 11 Victim Connected to Wazuh
-![Windows Agent](screenshots/windows11-victim-connected.png)
+### Shuffle SOAR workflow (Webhook → Python → Discord)
+![Shuffle workflow](screenshots/shuffle-workflow.png)
+
+### SMB enumeration scan against the Windows victim
+![SMB enumeration](screenshots/SMB-numeration.png)
+
+---
 
 ## Tools Used
 
 - **Wazuh** — SIEM, log analysis, MITRE ATT&CK mapping
 - **Sysmon** — Windows endpoint visibility
 - **Python** — custom Wazuh-to-Discord integration
+- **Shuffle** — SOAR workflow experimentation (webhook-triggered automation)
 - **Kali Linux** — attack simulation (Hydra, Nmap, enum4linux)
+
+---
 
 ## Attack Scenarios Detected
 
@@ -72,9 +84,9 @@ enum4linux -a 192.168.56.102
 nmap --script smb-enum-shares,smb-enum-users -p 445 192.168.56.102
 ```
 
-**Result:** Enumerated workgroup name, NetBIOS service info, and known usernames
-on the target. Wazuh flagged related activity on the Windows11-Victim agent,
-including a Level 15 critical alert for an executable dropped in a
+**Result:** Enumerated the workgroup name, NetBIOS service info, and known
+usernames on the target. Wazuh flagged related activity on the Windows11-Victim
+agent, including a Level 15 critical alert for an executable dropped in a
 malware-associated folder, and a Level 12 alert for event queue flooding caused
 by the scan volume.
 
@@ -85,6 +97,8 @@ process legitimately accessing Explorer, flagged as possible process injection)
 using a custom local rule. This demonstrates real-world alert tuning to reduce
 analyst fatigue from noisy detections.
 
+---
+
 ## How It Works
 
 1. Wazuh manager monitors agent logs (Windows Sysmon + Ubuntu syslog/auth)
@@ -94,11 +108,19 @@ analyst fatigue from noisy detections.
    name, and MITRE ATT&CK tactic/technique
 4. A formatted message is sent to Discord via webhook in real time
 
+```
+Wazuh Manager → Rule Match → Python Integration → Discord Webhook → #wazuh-alerts
+```
+
+---
+
 ## Files
 
 - `configs/ossec.conf` — Wazuh manager configuration
 - `configs/custom-discord` — Python integration script (webhook redacted)
 - `configs/local_rules.xml` — custom rule tuning (false positive suppression)
+
+---
 
 ## Notes
 
@@ -108,6 +130,8 @@ alerts being correctly generated and indexed (verified via direct OpenSearch que
 — 741+ alerts confirmed indexed). The underlying detection-to-alert pipeline
 (manager → integration → Discord) operates independently of the dashboard UI
 and was fully validated via `alerts.json` and live Discord delivery.
+
+---
 
 ## Key Takeaways
 
