@@ -3,9 +3,6 @@
 A home lab simulating SOC operations with Wazuh SIEM, Sysmon endpoint monitoring,
 and a custom real-time alerting pipeline to Discord.
 
-[![Watch the demo](screenshots/shuffle-workflow.png)](videos/brute-force-demo.mp4)
-**▲ Click the image above to watch the SSH brute force detection demo**
-
 ---
 
 ## Architecture
